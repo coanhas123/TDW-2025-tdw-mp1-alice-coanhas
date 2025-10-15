@@ -1,53 +1,51 @@
+// Path: cms-contentful-app/app/more-stories.tsx
+import Image from "next/image";
+
 type Story = {
   sys?: { id?: string };
   fields?: {
     title?: string;
     slug?: string;
-    coverImage?: {
-      sys?: Record<string, unknown>;
-      fields?: { file?: { url?: string } };
-    } | null;
+    coverImage?: { fields?: { file?: { url?: string } } } | null;
   };
 };
 
 type MoreStoriesProps = {
-  posts?: Story[];
+  posts?: Story[] | null;
+  className?: string;
 };
 
-function safeTitle(post: Story) {
-  return post.fields?.title ?? "Untitled";
-}
-
-export default function MoreStories({ posts = [] }: MoreStoriesProps) {
+export default function MoreStories({ posts = [], className }: MoreStoriesProps) {
   if (!Array.isArray(posts) || posts.length === 0) {
-    return <div>No stories yet</div>;
+    return <div className={className}>No stories yet</div>;
   }
 
   return (
-    <section>
+    <section className={className}>
       <h3>More stories</h3>
-      <ul>
+      <ul style={{ listStyle: "none", padding: 0 }}>
         {posts.map((post) => {
           const id = post.sys?.id ?? Math.random().toString(36).slice(2, 9);
-          const title = safeTitle(post);
+          const title = post.fields?.title ?? "Untitled";
+          const slug = post.fields?.slug ?? "#";
           const imageUrl = post.fields?.coverImage?.fields?.file?.url;
+          const src = imageUrl ? (imageUrl.startsWith("//") ? `https:${imageUrl}` : imageUrl) : null;
+
           return (
             <li key={id} style={{ marginBottom: 12 }}>
-              <a href={post.fields?.slug ?? "#"}>
+              <a href={slug} style={{ textDecoration: "none", color: "inherit" }}>
                 <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
-                  {imageUrl ? (
-                    // imagem externa pode precisar de http(s) prefix; assume url válida
-                    <img
-                      src={imageUrl}
+                  {src ? (
+                    <Image
+                      src={src}
                       alt={title}
-                      width={80}
-                      height={56}
-                      style={{ objectFit: "cover" }}
+                      width={120}
+                      height={80}
+                      style={{ objectFit: "cover", borderRadius: 6 }}
+                      unoptimized={true}
                     />
                   ) : (
-                    <div
-                      style={{ width: 80, height: 56, background: "#ddd" }}
-                    />
+                    <div style={{ width: 120, height: 80, background: "#ddd", borderRadius: 6 }} />
                   )}
                   <span>{title}</span>
                 </div>

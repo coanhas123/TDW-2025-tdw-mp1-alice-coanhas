@@ -1,15 +1,16 @@
+// Path: cms-contentful-app/lib/contentful-image.tsx
+import Image from "next/image";
+
 type ContentfulFile = { url?: string } | undefined;
 type ContentfulImageFields = { file?: ContentfulFile } | undefined;
-type ContentfulImage = {
-  sys?: Record<string, unknown>;
-  fields?: ContentfulImageFields;
-} | null;
+type ContentfulImage = { fields?: ContentfulImageFields } | null;
 
 type ContentfulImageProps = {
-  image?: ContentfulImage;
+  image?: ContentfulImage | null;
   alt?: string;
   width?: number;
   height?: number;
+  className?: string;
 };
 
 export default function ContentfulImage({
@@ -17,21 +18,30 @@ export default function ContentfulImage({
   alt,
   width = 800,
   height = 400,
+  className,
 }: ContentfulImageProps) {
   const url = image?.fields?.file?.url;
-  const safeAlt = alt ?? "image";
   if (!url) {
-    return <div style={{ width, height, background: "#eee" }} aria-hidden />;
+    return (
+      <div
+        className={className}
+        style={{ width, height, background: "#eee", display: "block" }}
+        aria-hidden
+      />
+    );
   }
-  // Contentful URLs sometimes lack protocol; ensure valid src
+
   const src = url.startsWith("//") ? `https:${url}` : url;
+
   return (
-    <img
+    <Image
       src={src}
-      alt={safeAlt}
+      alt={alt ?? "image"}
       width={width}
       height={height}
+      className={className}
       style={{ objectFit: "cover", width: "100%" }}
+      unoptimized={true}
     />
   );
 }
