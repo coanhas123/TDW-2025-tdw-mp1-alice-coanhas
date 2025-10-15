@@ -4,51 +4,66 @@ on:
   push:
     branches: [ main ]
 
+env:
+  # Ajusta se usares outra pasta base do projecto
+  BASE_DIR: cms-contentful-app
+
 jobs:
   checks:
     name: Pre-checks
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ env.BASE_DIR }}
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Node
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
 
-      - name: Install deps
+      - name: Install dependencies
         run: npm ci
 
+      - name: Run prettier
+        if: success()
+        run: npm run prettier
+
       - name: Lint
+        if: success()
         run: npm run lint
-        continue-on-error: false
 
       - name: Run tests
+        if: success()
         run: npm run test
-        continue-on-error: false
 
   build:
     name: Build site
     needs: checks
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ env.BASE_DIR }}
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Node
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
 
-      - name: Install deps
+      - name: Install dependencies
         run: npm ci
 
-      - name: Build (Next export)
+      - name: Clean previous build artifacts
         run: |
-          # se o projeto estiver numa subpasta:
-          # cd cms-contentful-app
-          npm run build
+          rm -rf .next out || true
+
+      - name: Build (Next export)
+        run: npm run build
 
       - name: List out folder
         run: ls -la out || true
@@ -57,11 +72,17 @@ jobs:
     name: Deploy to Netlify
     needs: build
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ env.BASE_DIR }}
+    env:
+      NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+      NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Node
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
@@ -69,11 +90,6 @@ jobs:
       - name: Install netlify-cli
         run: npm ci
 
-      - name: Deploy via Netlify CLI
-        env:
-          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+      - name: Deploy to Netlify via CLI
         run: |
-          # se o projeto estiver numa subpasta:
-          # cd cms-contentful-app
-          npx netlify-cli deploy --dir=out --prod --site="$NETLIFY_SITE_ID" --auth="$NETLIFY_AUTH_TOKEN"
+          npx netlify-cli deploy --dir=out --prod --site="$NETLIFY_SITE_ID"
