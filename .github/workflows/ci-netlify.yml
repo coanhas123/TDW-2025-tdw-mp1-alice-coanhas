@@ -1,0 +1,79 @@
+name: CI and Deploy to Netlify
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  checks:
+    name: Pre-checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+        continue-on-error: false
+
+      - name: Run tests
+        run: npm run test
+        continue-on-error: false
+
+  build:
+    name: Build site
+    needs: checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Build (Next export)
+        run: |
+          # se o projeto estiver numa subpasta:
+          # cd cms-contentful-app
+          npm run build
+
+      - name: List out folder
+        run: ls -la out || true
+
+  deploy:
+    name: Deploy to Netlify
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install netlify-cli
+        run: npm ci
+
+      - name: Deploy via Netlify CLI
+        env:
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+        run: |
+          # se o projeto estiver numa subpasta:
+          # cd cms-contentful-app
+          npx netlify-cli deploy --dir=out --prod --site="$NETLIFY_SITE_ID" --auth="$NETLIFY_AUTH_TOKEN"

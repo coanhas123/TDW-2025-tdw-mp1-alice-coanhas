@@ -1,3 +1,0 @@
-[build]
-  publish = "cms-contentful-app/out"
-  command = "cd cms-contentful-app && npm run build"

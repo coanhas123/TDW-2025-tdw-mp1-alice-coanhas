@@ -10,7 +10,8 @@
     "lint": "next lint",
     "test": "jest",
     "build-and-export": "next build && next export",
-    "prettier": "prettier --write \"src/**/*.tsx\" \"src/**/*.ts\" \"pages/**/*.tsx\""
+    "prettier": "prettier --write \"src/**/*.tsx\" \"src/**/*.ts\" \"pages/**/*.tsx\"",
+    "deploy:netlify": "npx netlify-cli deploy --dir=out --prod --site=$NETLIFY_SITE_ID --auth=$NETLIFY_AUTH_TOKEN"
   },
   "dependencies": {
     "contentful": "^11.8.6",
@@ -26,6 +27,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "15.5.5",
+    "netlify-cli": "^23.9.1",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
