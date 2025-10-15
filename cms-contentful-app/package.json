@@ -5,8 +5,9 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "export": "next export",
     "start": "next start",
-    "lint": "eslint"
+    "build-and-export": "next build && next export"
   },
   "dependencies": {
     "contentful": "^11.8.6",
