@@ -7,7 +7,10 @@
     "build": "next build",
     "export": "next export",
     "start": "next start",
-    "build-and-export": "next build && next export"
+    "lint": "next lint",
+    "test": "jest",
+    "build-and-export": "next build && next export",
+    "prettier": "prettier --write \"src/**/*.tsx\" \"src/**/*.ts\" \"pages/**/*.tsx\""
   },
   "dependencies": {
     "contentful": "^11.8.6",
