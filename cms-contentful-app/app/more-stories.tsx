@@ -3,7 +3,10 @@ type Story = {
   fields?: {
     title?: string;
     slug?: string;
-    coverImage?: { sys?: Record<string, unknown>; fields?: { file?: { url?: string } } } | null;
+    coverImage?: {
+      sys?: Record<string, unknown>;
+      fields?: { file?: { url?: string } };
+    } | null;
   };
 };
 
@@ -34,9 +37,17 @@ export default function MoreStories({ posts = [] }: MoreStoriesProps) {
                 <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
                   {imageUrl ? (
                     // imagem externa pode precisar de http(s) prefix; assume url válida
-                    <img src={imageUrl} alt={title} width={80} height={56} style={{ objectFit: "cover" }} />
+                    <img
+                      src={imageUrl}
+                      alt={title}
+                      width={80}
+                      height={56}
+                      style={{ objectFit: "cover" }}
+                    />
                   ) : (
-                    <div style={{ width: 80, height: 56, background: "#ddd" }} />
+                    <div
+                      style={{ width: 80, height: 56, background: "#ddd" }}
+                    />
                   )}
                   <span>{title}</span>
                 </div>

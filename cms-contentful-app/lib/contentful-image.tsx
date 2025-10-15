@@ -1,6 +1,9 @@
 type ContentfulFile = { url?: string } | undefined;
 type ContentfulImageFields = { file?: ContentfulFile } | undefined;
-type ContentfulImage = { sys?: Record<string, unknown>; fields?: ContentfulImageFields } | null;
+type ContentfulImage = {
+  sys?: Record<string, unknown>;
+  fields?: ContentfulImageFields;
+} | null;
 
 type ContentfulImageProps = {
   image?: ContentfulImage;
@@ -9,7 +12,12 @@ type ContentfulImageProps = {
   height?: number;
 };
 
-export default function ContentfulImage({ image, alt, width = 800, height = 400 }: ContentfulImageProps) {
+export default function ContentfulImage({
+  image,
+  alt,
+  width = 800,
+  height = 400,
+}: ContentfulImageProps) {
   const url = image?.fields?.file?.url;
   const safeAlt = alt ?? "image";
   if (!url) {
@@ -17,5 +25,13 @@ export default function ContentfulImage({ image, alt, width = 800, height = 400 
   }
   // Contentful URLs sometimes lack protocol; ensure valid src
   const src = url.startsWith("//") ? `https:${url}` : url;
-  return <img src={src} alt={safeAlt} width={width} height={height} style={{ objectFit: "cover", width: "100%" }} />;
+  return (
+    <img
+      src={src}
+      alt={safeAlt}
+      width={width}
+      height={height}
+      style={{ objectFit: "cover", width: "100%" }}
+    />
+  );
 }

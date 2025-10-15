@@ -1,7 +1,10 @@
 import { getEntries } from "../lib/api";
 
 type AuthorFields = { name?: string };
-type AuthorLink = { sys?: Record<string, unknown>; fields?: AuthorFields } | null;
+type AuthorLink = {
+  sys?: Record<string, unknown>;
+  fields?: AuthorFields;
+} | null;
 type BlogFields = {
   sys: { id: string };
   fields: {
@@ -28,7 +31,8 @@ export default async function Page() {
         let authorName = "Desconhecido";
         if (isAuthorLink(item.fields?.author)) {
           const author = item.fields?.author;
-          if (author && typeof author.fields?.name === "string") authorName = author.fields.name;
+          if (author && typeof author.fields?.name === "string")
+            authorName = author.fields.name;
         }
         return (
           <article key={item.sys.id}>

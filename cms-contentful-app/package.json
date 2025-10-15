@@ -7,10 +7,11 @@
     "build": "next build",
     "export": "next export",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "test": "jest",
     "build-and-export": "next build && next export",
-    "prettier": "prettier --write \"src/**/*.tsx\" \"src/**/*.ts\" \"pages/**/*.tsx\"",
+    "prettier": "prettier --write \"**/*.{ts,tsx,js,jsx,json,css,md,mdx,html}\" --ignore-path .prettierignore",
+    "prettier:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,css,md,mdx,html}\" --ignore-path .prettierignore",
     "deploy:netlify": "npx netlify-cli deploy --dir=out --prod --site=$NETLIFY_SITE_ID --auth=$NETLIFY_AUTH_TOKEN"
   },
   "dependencies": {
@@ -21,13 +22,19 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@eslint/js": "^9.37.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19.2.2",
     "@types/react-dom": "^19",
-    "eslint": "^9",
-    "eslint-config-next": "15.5.5",
+    "@typescript-eslint/eslint-plugin": "^8.46.1",
+    "@typescript-eslint/parser": "^8.46.1",
+    "eslint": "^9.37.0",
+    "eslint-config-next": "^15.5.5",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.4",
     "netlify-cli": "^23.9.1",
+    "prettier": "3.6.2",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
