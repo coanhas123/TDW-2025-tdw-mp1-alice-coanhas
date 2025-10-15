@@ -6,7 +6,6 @@
     "start": "next start",
     "setup": "node ./lib/setup.js",
     "lint": "eslint ."
-
   },
   "dependencies": {
     "@contentful/rich-text-react-renderer": "^15.17.1",
@@ -27,6 +26,7 @@
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.14.0",
-    "@types/node": "^24.7.2"
+    "@types/node": "^24.7.2",
+    "eslint-config-next": "^15.5.5"
   }
 }
