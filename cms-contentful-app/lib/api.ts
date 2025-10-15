@@ -6,6 +6,6 @@ export async function getEntries<T = unknown>(contentType: string): Promise<T[]>
     include: 2,
   });
 
-  // Faz cast seguro: tratamos entries.items como unknown antes de converter para T[]
+  // Trata entries.items como unknown antes de converter para T[]
   return (entries.items as unknown) as T[];
 }
