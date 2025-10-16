@@ -79,15 +79,12 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: 🏗️ 1/2 Next Build (Gera o .next)
-        # CORREÇÃO: Usar npx para encontrar o executável 'next'
+      - name: 🏗️ Run Next Build & Static Export
+        # O npx next build agora gera a pasta 'out' graças ao next.config.js
+        # O passo 'next export' obsoleto foi removido.
         run: npx next build
         
-      - name: 📦 2/2 Next Export (Gera a pasta 'out')
-        # CORREÇÃO: Usar npx para encontrar o executável 'next'
-        run: npx next export
-        
-      # Agora a pasta 'out' existe na pasta de trabalho
+      # Agora a pasta 'out' existe (se output: 'export' estiver definido)
       - name: Prepare Artifact for Deploy
         run: |
           mkdir -p ../out_artifact 
