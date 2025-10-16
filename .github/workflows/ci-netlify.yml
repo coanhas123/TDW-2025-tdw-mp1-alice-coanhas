@@ -59,6 +59,14 @@ jobs:
     defaults:
       run:
         working-directory: ${{ env.BASE_DIR }}
+        
+    # 🚨 CORREÇÃO ESSENCIAL: EXPOR CREDENCIAIS AQUI 🚨
+    env:
+      CONTENTFUL_SPACE_ID: ${{ secrets.CONTENTFUL_SPACE_ID }}
+      CONTENTFUL_ACCESS_TOKEN: ${{ secrets.CONTENTFUL_ACCESS_TOKEN }}
+      CONTENTFUL_PREVIEW_ACCESS_TOKEN: ${{ secrets.CONTENTFUL_PREVIEW_ACCESS_TOKEN }}
+      CONTENTFUL_ENVIRONMENT: ${{ secrets.CONTENTFUL_ENVIRONMENT }}
+      
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -73,7 +81,7 @@ jobs:
         run: npm ci
 
       - name: 🏗️ Run build (Next export)
-        # Assumindo que 'npm run build' executa 'next build && next export'
+        # O comando de build agora está limpo, pois as variáveis estão no 'env' do job.
         run: npm run build
         
       # Esta etapa é crucial para o deploy.
@@ -111,7 +119,7 @@ jobs:
           name: cms-contentful-app-out
           path: out/ # Baixa para uma pasta 'out' na raiz do workspace
 
-      - name: 🚀 Deploy to Netlify via CLI
+      - name:  Deploy to Netlify via CLI
         run: |
           npm install -g netlify-cli # Instala o netlify-cli
           # O diretório 'out' agora está na raiz do workspace
