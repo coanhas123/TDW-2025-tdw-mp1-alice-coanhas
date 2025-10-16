@@ -1,6 +1,10 @@
-// Nota: Os caminhos de importação são corrigidos para assumir um alias '@/' ou um caminho relativo correto.
+import Avatar from './components/avatar'
+import CoverImage from './components/cover-image'
+
+
 // Vou usar caminhos relativos típicos de um starter Next.js, assumindo que components/ está um nível acima
-import PostPreview from '../components/post-preview'; 
+import PostPreview from './components/post-preview';
+
 
 interface Post {
   slug: string;

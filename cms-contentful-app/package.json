@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build && next export",
+    "build": "next build",
     "export": "next export",
     "start": "next start",
     "lint": "eslint \"**/*.{js,jsx,ts,tsx,mjs}\"",
@@ -17,15 +17,17 @@
   "dependencies": {
     "@contentful/rich-text-react-renderer": "^16.1.5",
     "@contentful/rich-text-types": "^17.2.4",
+    "autoprefixer": "^10.4.21",
     "contentful": "^11.8.6",
     "next": "^15.5.5",
+    "postcss": "^8.5.6",
     "react": "19.1.0",
     "react-dom": "19.1.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@eslint/js": "^9.37.0",
-    "@tailwindcss/postcss": "^4",
+    "@tailwindcss/postcss": "^4.1.14",
     "@types/jest": "^30.0.0",
     "@types/node": "^20",
     "@types/react": "^19.2.2",
@@ -39,7 +41,7 @@
     "lint-staged": "^16.2.4",
     "netlify-cli": "^23.9.1",
     "prettier": "3.6.2",
-    "tailwindcss": "^4",
+    "tailwindcss": "^4.1.14",
     "ts-jest": "^29.4.5",
     "typescript": "^5"
   }
