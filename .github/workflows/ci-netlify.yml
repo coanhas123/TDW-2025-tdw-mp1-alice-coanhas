@@ -80,18 +80,18 @@ jobs:
         run: npm ci
 
       - name: 🏗️ 1/2 Next Build (Gera o .next)
-        # Este passo só compila
-        run: next build
+        # CORREÇÃO: Usar npx para encontrar o executável 'next'
+        run: npx next build
         
       - name: 📦 2/2 Next Export (Gera a pasta 'out')
-        # Este passo gera a pasta estática 'out' (necessária para o Netlify)
-        run: next export
+        # CORREÇÃO: Usar npx para encontrar o executável 'next'
+        run: npx next export
         
       # Agora a pasta 'out' existe na pasta de trabalho
       - name: Prepare Artifact for Deploy
         run: |
           mkdir -p ../out_artifact 
-          mv out ../out_artifact/out # Este comando já não deve falhar
+          mv out ../out_artifact/out
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
