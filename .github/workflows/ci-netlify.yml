@@ -1,48 +1,61 @@
-name: CI and Deploy to Netlify
+name: CI/CD Pipeline (prettier → lint → test → build → deploy)
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch: {}
 
 env:
-  # Ajusta se usares outra pasta base do projecto
+  # Define a pasta raiz do seu projeto
   BASE_DIR: cms-contentful-app
 
 jobs:
+  # --------------------------------------------------------------------------------
+  # 1. CHECKS (Prettier, Lint, Test) - Correm sequencialmente dentro deste job
+  # --------------------------------------------------------------------------------
   checks:
-    name: Pre-checks
+    name: Prettier, Lint & Test
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: cms-contentful-app
+        working-directory: ${{ env.BASE_DIR }} # Define a pasta de trabalho
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      - name: Setup Node.js 18
         uses: actions/setup-node@v4
         with:
           node-version: '18'
+          cache: 'npm' # Adiciona cache para velocidade
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Run prettier
-        if: success()
+      - name: ⚙️ Run Prettier (Check formatting)
+        # O prettier deve correr primeiro, mas como não falha o pipeline, é um bom check
         run: npm run prettier
 
-      - name: Lint
-        if: success()
+      - name: 🔎 Run ESLint (Static analysis)
         run: npm run lint
 
-      - name: Run tests
-        if: success()
-        run: npm run test
+      - name: 🧪 Run Jest Tests
+        # Usamos --ci para garantir que o Jest funciona em um ambiente de CI
+        run: npm run test -- --ci --reporters=default
 
+  # --------------------------------------------------------------------------------
+  # 2. BUILD - Corre APENAS se o job 'checks' passar
+  # --------------------------------------------------------------------------------
   build:
-    name: Build site
-    needs: checks
+    name: Build (Next Export)
+    needs: checks # Depende do sucesso de todos os checks (prettier, lint, test)
     runs-on: ubuntu-latest
+    # Só corre em 'main'
+    if: github.ref == 'refs/heads/main'
     defaults:
       run:
         working-directory: ${{ env.BASE_DIR }}
@@ -50,31 +63,41 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      - name: Setup Node.js 18
         uses: actions/setup-node@v4
         with:
           node-version: '18'
+          cache: 'npm'
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Clean previous build artifacts
-        run: |
-          rm -rf .next out || true
-
-      - name: Build (Next export)
+      - name: 🏗️ Run build (Next export)
+        # Assumindo que 'npm run build' executa 'next build && next export'
         run: npm run build
+        
+      # Esta etapa é crucial para o deploy.
+      # O output da build (a pasta 'out') precisa estar na raiz para o deploy
+      - name: Prepare Artifact for Deploy
+        run: |
+          mkdir -p ../out_artifact 
+          mv out ../out_artifact/out
 
-      - name: List out folder
-        run: ls -la out || true
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: cms-contentful-app-out
+          path: ../out_artifact/out/ # Caminho relativo à raiz do workspace
 
+  # --------------------------------------------------------------------------------
+  # 3. DEPLOY - Corre APENAS se o 'build' passar
+  # --------------------------------------------------------------------------------
   deploy:
     name: Deploy to Netlify
-    needs: build
+    needs: build # Depende do sucesso do build
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ${{ env.BASE_DIR }}
+    # Só corre em 'main'
+    if: github.ref == 'refs/heads/main'
     env:
       NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
       NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
@@ -82,14 +105,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
         with:
-          node-version: '18'
+          name: cms-contentful-app-out
+          path: out/ # Baixa para uma pasta 'out' na raiz do workspace
 
-      - name: Install netlify-cli
-        run: npm ci
-
-      - name: Deploy to Netlify via CLI
+      - name: 🚀 Deploy to Netlify via CLI
         run: |
-          npx netlify-cli deploy --dir=out --prod --site="$NETLIFY_SITE_ID"
+          npm install -g netlify-cli # Instala o netlify-cli
+          # O diretório 'out' agora está na raiz do workspace
+          netlify deploy --dir=out --prod
