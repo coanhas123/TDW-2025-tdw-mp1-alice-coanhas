@@ -1,7 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'export',
-  // outras configs que já tenhas
+  images: {
+    domains: ['images.ctfassets.net'], // necessário para imagens do Contentful
+  },
 };
 
 module.exports = nextConfig;
