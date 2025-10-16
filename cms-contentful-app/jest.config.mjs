@@ -1,18 +1,19 @@
-// jest.config.js (CommonJS)
+// jest.config.mjs
 
-// Usa require() em vez de import
-const { createDefaultPreset } = require("ts-jest");
+// Usar 'import' em vez de 'require'
+import { createDefaultPreset } from "ts-jest";
 
-// Chama a função e extrai 'transform'
+// O código não precisa de ser alterado, pois já estava a usar a sintaxe limpa
 const tsJestTransformCfg = createDefaultPreset().transform;
 
 /** @type {import("jest").Config} **/
 const jestConfig = {
   testEnvironment: "node",
   transform: {
-    ...tsJestTransformCfg,
+    ...tsJestTransformCfg, 
   },
+  // Adicione outras configurações do Jest aqui, se necessário
 };
 
-// Usa module.exports em vez de export default
-module.exports = jestConfig;
+// Usar 'export default' em vez de 'module.exports'
+export default jestConfig;
