@@ -1,13 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // ESSENCIAL: Permite que o 'next build' gere a pasta 'out' para Netlify
-  output: 'export',
-  
-  // Garante que a aplicação se comporte como uma Single Page Application (SPA)
-  // e gera páginas HTML estáticas.
-  trailingSlash: true, 
-
-  // ... (outras configurações, se existirem)
+  // ESSENCIAL para a Geração Estática (Static Export)
+  // Esta linha diz ao 'next build' para gerar uma pasta 'out'
+  // em vez do padrão '.next/standalone'.
+  output: 'export', 
 };
 
 module.exports = nextConfig;
+
