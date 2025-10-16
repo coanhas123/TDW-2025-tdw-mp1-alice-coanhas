@@ -1,46 +1,109 @@
-import { getEntries } from "../lib/api";
+import Image from "next/image";
+import { getPosts } from "@/lib/api";
 
-type AuthorFields = { name?: string };
-type AuthorLink = {
-  sys?: Record<string, unknown>;
-  fields?: AuthorFields;
-} | null;
-type BlogFields = {
-  sys: { id: string };
-  fields: {
-    title?: string;
-    description?: string;
-    author?: AuthorLink;
-  };
-};
+export default async function Home() {
+  const posts = await getPosts(); // supondo que já retorna os posts conforme seu modelo
 
-function isAuthorLink(value: unknown): value is AuthorLink {
-  if (value === null) return true;
-  if (typeof value !== "object" || value === null) return false;
-  const v = value as Record<string, unknown>;
-  return "fields" in v;
-}
+  if (posts.length === 0) {
+    return <p>Nenhum post encontrado.</p>;
+  }
 
-export default async function Page() {
-  const posts = await getEntries<BlogFields>("blogPage");
+  // primeiro post como destaque
+  const destaque = posts[0];
+  const demais = posts.slice(1);
+
+  const dd = destaque.fields;
+  const coverUrl = dd.coverImage?.fields?.file.url
+    ? "https:" + dd.coverImage.fields.file.url
+    : null;
+  const authorData = dd.author?.fields;
+  const authorPic = authorData?.picture?.fields?.file.url
+    ? "https:" + authorData.picture.fields.file.url
+    : null;
 
   return (
-    <main>
-      {posts.map((item) => {
-        const title = String(item.fields?.title ?? "Sem título");
-        let authorName = "Desconhecido";
-        if (isAuthorLink(item.fields?.author)) {
-          const author = item.fields?.author;
-          if (author && typeof author.fields?.name === "string")
-            authorName = author.fields.name;
-        }
-        return (
-          <article key={item.sys.id}>
-            <h2>{title}</h2>
-            <p>Autor: {authorName}</p>
-          </article>
-        );
-      })}
+    <main className="max-w-4xl mx-auto px-6 py-16 space-y-16">
+      {/* Banner / Destaque */}
+      <section className="space-y-8">
+        {coverUrl && (
+          <div className="relative w-full h-96">
+            <Image
+              src={coverUrl}
+              alt={dd.title}
+              fill
+              className="object-cover rounded-xl"
+            />
+          </div>
+        )}
+        <div className="space-y-2">
+          <h1 className="text-4xl md:text-5xl font-bold">{dd.title}</h1>
+          <div className="flex items-center gap-4 text-sm text-gray-600">
+            <span>{new Date(dd.date).toLocaleDateString("pt-PT")}</span>
+            <span>•</span>
+            <div className="flex items-center gap-2">
+              {authorPic && (
+                <Image
+                  src={authorPic}
+                  alt={authorData?.name || ""}
+                  width={32}
+                  height={32}
+                  className="rounded-full"
+                />
+              )}
+              <span>{authorData?.name}</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* More Stories / Posts secundários */}
+      <section className="space-y-12">
+        <h2 className="text-2xl font-semibold">More Stories</h2>
+        <div className="grid gap-12 md:grid-cols-2">
+          {demais.map((post: any) => {
+            const f = post.fields;
+            const url = f.coverImage?.fields?.file.url
+              ? "https:" + f.coverImage.fields.file.url
+              : null;
+            const ad = post.fields.author?.fields;
+            const ap = ad?.picture?.fields?.file.url
+              ? "https:" + ad.picture.fields.file.url
+              : null;
+
+            return (
+              <article key={post.sys.id} className="space-y-4">
+                {url && (
+                  <div className="relative w-full h-48">
+                    <Image
+                      src={url}
+                      alt={f.title}
+                      fill
+                      className="object-cover rounded-lg"
+                    />
+                  </div>
+                )}
+                <div className="space-y-2">
+                  <h3 className="text-xl font-medium">{f.title}</h3>
+                  <div className="flex items-center gap-3 text-sm text-gray-500">
+                    <span>{new Date(f.date).toLocaleDateString("pt-PT")}</span>
+                    <span>•</span>
+                    {ap && (
+                      <Image
+                        src={ap}
+                        alt={ad?.name || ""}
+                        width={24}
+                        height={24}
+                        className="rounded-full"
+                      />
+                    )}
+                    <span>{ad?.name}</span>
+                  </div>
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      </section>
     </main>
   );
 }
