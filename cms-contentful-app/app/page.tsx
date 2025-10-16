@@ -2,108 +2,76 @@ import Image from "next/image";
 import { getPosts } from "@/lib/api";
 
 export default async function Home() {
-  const posts = await getPosts(); // supondo que já retorna os posts conforme seu modelo
-
-  if (posts.length === 0) {
-    return <p>Nenhum post encontrado.</p>;
-  }
-
-  // primeiro post como destaque
-  const destaque = posts[0];
-  const demais = posts.slice(1);
-
-  const dd = destaque.fields;
-  const coverUrl = dd.coverImage?.fields?.file.url
-    ? "https:" + dd.coverImage.fields.file.url
-    : null;
-  const authorData = dd.author?.fields;
-  const authorPic = authorData?.picture?.fields?.file.url
-    ? "https:" + authorData.picture.fields.file.url
-    : null;
+  const posts = await getPosts();
 
   return (
-    <main className="max-w-4xl mx-auto px-6 py-16 space-y-16">
-      {/* Banner / Destaque */}
-      <section className="space-y-8">
-        {coverUrl && (
-          <div className="relative w-full h-96">
-            <Image
-              src={coverUrl}
-              alt={dd.title}
-              fill
-              className="object-cover rounded-xl"
-            />
-          </div>
-        )}
-        <div className="space-y-2">
-          <h1 className="text-4xl md:text-5xl font-bold">{dd.title}</h1>
-          <div className="flex items-center gap-4 text-sm text-gray-600">
-            <span>{new Date(dd.date).toLocaleDateString("pt-PT")}</span>
-            <span>•</span>
-            <div className="flex items-center gap-2">
-              {authorPic && (
-                <Image
-                  src={authorPic}
-                  alt={authorData?.name || ""}
-                  width={32}
-                  height={32}
-                  className="rounded-full"
-                />
+    <main className="max-w-5xl mx-auto px-6 py-16">
+      <h1 className="text-5xl font-bold text-center mb-16 tracking-tight">
+        Blog
+      </h1>
+
+      <div className="grid gap-16 md:grid-cols-2">
+        {posts.map((post: any) => {
+          const { title, excerpt, coverImage, author, date, slug } = post.fields;
+          const authorData = author?.fields;
+
+          const coverUrl = coverImage?.fields?.file?.url
+            ? "https:" + coverImage.fields.file.url
+            : null;
+          const authorPic = authorData?.picture?.fields?.file?.url
+            ? "https:" + authorData.picture.fields.file.url
+            : null;
+
+          return (
+            <article
+              key={post.sys.id}
+              className="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-lg transition-shadow"
+            >
+              {coverUrl && (
+                <div className="relative w-full h-64">
+                  <Image
+                    src={coverUrl}
+                    alt={title}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                  />
+                </div>
               )}
-              <span>{authorData?.name}</span>
-            </div>
-          </div>
-        </div>
-      </section>
+              <div className="p-6 space-y-3">
+                <h2 className="text-2xl font-semibold text-gray-900 hover:text-blue-600 transition">
+                  {title}
+                </h2>
+                <p className="text-gray-600 line-clamp-3">{excerpt}</p>
 
-      {/* More Stories / Posts secundários */}
-      <section className="space-y-12">
-        <h2 className="text-2xl font-semibold">More Stories</h2>
-        <div className="grid gap-12 md:grid-cols-2">
-          {demais.map((post: any) => {
-            const f = post.fields;
-            const url = f.coverImage?.fields?.file.url
-              ? "https:" + f.coverImage.fields.file.url
-              : null;
-            const ad = post.fields.author?.fields;
-            const ap = ad?.picture?.fields?.file.url
-              ? "https:" + ad.picture.fields.file.url
-              : null;
-
-            return (
-              <article key={post.sys.id} className="space-y-4">
-                {url && (
-                  <div className="relative w-full h-48">
+                <div className="flex items-center gap-3 pt-4 border-t border-gray-100">
+                  {authorPic && (
                     <Image
-                      src={url}
-                      alt={f.title}
-                      fill
-                      className="object-cover rounded-lg"
+                      src={authorPic}
+                      alt={authorData?.name || "Author"}
+                      width={40}
+                      height={40}
+                      className="rounded-full"
                     />
-                  </div>
-                )}
-                <div className="space-y-2">
-                  <h3 className="text-xl font-medium">{f.title}</h3>
-                  <div className="flex items-center gap-3 text-sm text-gray-500">
-                    <span>{new Date(f.date).toLocaleDateString("pt-PT")}</span>
-                    <span>•</span>
-                    {ap && (
-                      <Image
-                        src={ap}
-                        alt={ad?.name || ""}
-                        width={24}
-                        height={24}
-                        className="rounded-full"
-                      />
-                    )}
-                    <span>{ad?.name}</span>
+                  )}
+                  <div>
+                    <p className="text-sm font-medium text-gray-800">
+                      {authorData?.name || "Desconhecido"}
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      {new Date(date).toLocaleDateString("pt-PT", {
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric",
+                      })}
+                    </p>
                   </div>
                 </div>
-              </article>
-            );
-          })}
-        </div>
-      </section>
+              </div>
+            </article>
+          );
+        })}
+      </div>
     </main>
   );
 }

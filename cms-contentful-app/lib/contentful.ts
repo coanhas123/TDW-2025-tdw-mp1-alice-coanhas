@@ -5,7 +5,9 @@ const ACCESS_TOKEN = process.env.CONTENTFUL_ACCESS_TOKEN!;
 const PREVIEW_TOKEN = process.env.CONTENTFUL_PREVIEW_ACCESS_TOKEN;
 
 if (!SPACE_ID || !ACCESS_TOKEN) {
-  throw new Error("❌ Missing Contentful credentials. Check your .env.local file.");
+  throw new Error(
+    "❌ Missing Contentful credentials. Check your .env.local file.",
+  );
 }
 
 export const contentfulClient = createClient({
