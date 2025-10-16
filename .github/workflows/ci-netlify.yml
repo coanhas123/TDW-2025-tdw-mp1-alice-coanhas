@@ -80,21 +80,18 @@ jobs:
         run: npm ci
 
       - name: 🏗️ Run Next Build & Static Export
-        # O npx next build agora gera a pasta 'out' graças ao next.config.js
-        # O passo 'next export' obsoleto foi removido.
+        # O npx next build gera a pasta 'out' graças ao next.config.js (output: 'export')
         run: npx next build
         
-      # Agora a pasta 'out' existe (se output: 'export' estiver definido)
-      - name: Prepare Artifact for Deploy
-        run: |
-          mkdir -p ../out_artifact 
-          mv out ../out_artifact/out
-
+      # REMOVIDO: O passo 'Prepare Artifact for Deploy' foi removido porque introduzia caminhos proibidos ('..').
+      # A pasta 'out' permanece em cms-contentful-app/out.
+      
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
           name: cms-contentful-app-out
-          path: ../out_artifact/out/ # Caminho relativo à raiz do workspace
+          # CORRIGIDO: O caminho agora é absoluto a partir da raiz do workspace, sem usar '..'.
+          path: ${{ env.BASE_DIR }}/out/ 
 
   # --------------------------------------------------------------------------------
   # 3. DEPLOY - Corre APENAS se o 'build' passar
