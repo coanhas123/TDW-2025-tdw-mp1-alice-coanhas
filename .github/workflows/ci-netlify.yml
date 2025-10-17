@@ -11,7 +11,7 @@ on:
 
 env:
   # Define a pasta raiz do seu projeto
-  BASE_DIR: cms-contentful-app
+  BASE_DIR: 94684
 
 jobs:
   # --------------------------------------------------------------------------------
@@ -88,7 +88,7 @@ jobs:
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: cms-contentful-app-out
+          name: 94684
           # CORRIGIDO: O caminho agora é absoluto a partir da raiz do workspace, sem usar '..'.
           path: ${{ env.BASE_DIR }}/out/
 
@@ -111,7 +111,7 @@ jobs:
       - name: Download build artifact
         uses: actions/download-artifact@v4
         with:
-          name: cms-contentful-app-out
+          name: 94684
           path: out/ # Baixa para uma pasta 'out' na raiz do workspace
 
       - name: Deploy to Netlify via CLI
