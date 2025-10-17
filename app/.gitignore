@@ -1,4 +1,29 @@
+# Dependências
 node_modules/
-node_modules/
-node_modules/
-node_modules/
+
+# Builds e exportações
+.next/
+out/
+
+# Ambiente local
+.env.local
+.env.development
+.env.production
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Sistema operativo
+.DS_Store
+
+# Editor de código
+.vscode/
+.idea/
+
+# Tailwind e PostCSS (se aplicável)
+*.css.map
+
+# MacOS
+*.swp
