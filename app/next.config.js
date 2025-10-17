@@ -1,20 +1,20 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: 'export',
   images: {
+    unoptimized: true,
     remotePatterns: [
       {
-        protocol: "https",
-        hostname: "**.ctfassets.net",
+        protocol: 'https',
+        hostname: '**.ctfassets.net',
       },
       {
-        protocol: "https",
-        hostname: "**.contentful.com",
+        protocol: 'https',
+        hostname: '**.contentful.com',
       },
     ],
   },
 };
-module.exports = {
-  output: 'export',
-};
 
 module.exports = nextConfig;
+

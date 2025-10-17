@@ -1,6 +1,10 @@
+import { Entry } from 'contentful';
 import Image from "next/image";
-import { getPosts } from "@/lib/api";
+import type { PostEntry } from "./lib/types";
+
 import { Post } from "../types/contentful";
+import { getPosts } from "./lib/api";
+
 
 export default async function Home() {
   const posts = await getPosts();
@@ -60,7 +64,7 @@ export default async function Home() {
       <section className="space-y-12">
         <h2 className="text-2xl font-semibold">More Stories</h2>
         <div className="grid gap-12 md:grid-cols-2">
-          {demais.map((post: Post) => {
+          {demais.map((post: any) => {
             const { id } = post.sys;
             const { title, date, author, coverImage } = post.fields;
 
