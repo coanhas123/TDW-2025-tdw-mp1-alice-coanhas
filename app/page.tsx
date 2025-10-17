@@ -1,10 +1,9 @@
-import { Entry } from 'contentful';
+import { Entry } from "contentful";
 import Image from "next/image";
 import type { PostEntry } from "./lib/types";
 
 import { Post } from "../types/contentful";
 import { getPosts } from "./lib/api";
-
 
 export default async function Home() {
   const posts = await getPosts();
