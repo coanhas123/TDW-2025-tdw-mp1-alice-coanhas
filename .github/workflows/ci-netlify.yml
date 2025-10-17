@@ -9,62 +9,13 @@ on:
       - main
   workflow_dispatch: {}
 
-env:
-  # Define a pasta raiz do seu projeto
-  BASE_DIR: 94684
-
 jobs:
   # --------------------------------------------------------------------------------
-  # 1. CHECKS (Prettier, Lint, Test) - Correm sequencialmente dentro deste job
+  # 1. CHECKS (Prettier, Lint, Test)
   # --------------------------------------------------------------------------------
   checks:
     name: Prettier, Lint & Test
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ${{ env.BASE_DIR }} # Define a pasta de trabalho
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js 18
-        uses: actions/setup-node@v4
-        with:
-          node-version: "18"
-          cache: "npm" # Adiciona cache para velocidade
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: ⚙️ Run Prettier (Check formatting)
-        run: npm run prettier
-
-      - name: 🔎 Run ESLint (Static analysis)
-        run: npm run lint
-
-      - name: 🧪 Run Jest Tests
-        run: npm run test -- --ci --reporters=default
-
-  # --------------------------------------------------------------------------------
-  # 2. BUILD - Corre APENAS se o job 'checks' passar
-  # --------------------------------------------------------------------------------
-  build:
-    name: Build (Next Export)
-    needs: checks # Depende do sucesso de todos os checks (prettier, lint, test)
-    runs-on: ubuntu-latest
-    # Só corre em 'main'
-    if: github.ref == 'refs/heads/main'
-    defaults:
-      run:
-        working-directory: ${{ env.BASE_DIR }}
-
-    env:
-      # Credenciais Contentful injetadas dos Secrets
-      CONTENTFUL_SPACE_ID: ${{ secrets.CONTENTFUL_SPACE_ID }}
-      CONTENTFUL_ACCESS_TOKEN: ${{ secrets.CONTENTFUL_ACCESS_TOKEN }}
-      CONTENTFUL_PREVIEW_ACCESS_TOKEN: ${{ secrets.CONTENTFUL_PREVIEW_ACCESS_TOKEN }}
-      CONTENTFUL_ENVIRONMENT: ${{ secrets.CONTENTFUL_ENVIRONMENT }}
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -77,29 +28,64 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+        working-directory: 94684
 
-      - name: 🏗️ Run Next Build & Static Export
-        # O npx next build gera a pasta 'out' graças ao next.config.js (output: 'export')
-        run: npx next build
+      - name: ⚙️ Run Prettier
+        run: npm run prettier
+        working-directory: 94684
 
-      # REMOVIDO: O passo 'Prepare Artifact for Deploy' foi removido porque introduzia caminhos proibidos ('..').
-      # A pasta 'out' permanece em cms-contentful-app/out.
+      - name: 🔎 Run ESLint
+        run: npm run lint
+        working-directory: 94684
+
+      - name: 🧪 Run Jest Tests
+        run: npm run test -- --ci --reporters=default
+        working-directory: 94684
+
+  # --------------------------------------------------------------------------------
+  # 2. BUILD
+  # --------------------------------------------------------------------------------
+  build:
+    name: Build (Next Export)
+    needs: checks
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    env:
+      CONTENTFUL_SPACE_ID: ${{ secrets.CONTENTFUL_SPACE_ID }}
+      CONTENTFUL_ACCESS_TOKEN: ${{ secrets.CONTENTFUL_ACCESS_TOKEN }}
+      CONTENTFUL_PREVIEW_ACCESS_TOKEN: ${{ secrets.CONTENTFUL_PREVIEW_ACCESS_TOKEN }}
+      CONTENTFUL_ENVIRONMENT: ${{ secrets.CONTENTFUL_ENVIRONMENT }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 18
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: 94684
+
+      - name: 🏗️ Run Next Build & Export
+        run: npx next build && npx next export
+        working-directory: 94684
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: 94684
-          # CORRIGIDO: O caminho agora é absoluto a partir da raiz do workspace, sem usar '..'.
-          path: ${{ env.BASE_DIR }}/out/
+          name: build-output
+          path: 94684/out/
 
   # --------------------------------------------------------------------------------
-  # 3. DEPLOY - Corre APENAS se o 'build' passar
+  # 3. DEPLOY
   # --------------------------------------------------------------------------------
   deploy:
     name: Deploy to Netlify
-    needs: build # Depende do sucesso do build
+    needs: build
     runs-on: ubuntu-latest
-    # Só corre em 'main'
     if: github.ref == 'refs/heads/main'
     env:
       NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
@@ -111,11 +97,10 @@ jobs:
       - name: Download build artifact
         uses: actions/download-artifact@v4
         with:
-          name: 94684
-          path: out/ # Baixa para uma pasta 'out' na raiz do workspace
+          name: build-output
+          path: out/
 
       - name: Deploy to Netlify via CLI
         run: |
-          npm install -g netlify-cli # Instala o netlify-cli
-          # O diretório 'out' agora está na raiz do workspace
+          npm install -g netlify-cli
           netlify deploy --dir=out --prod
