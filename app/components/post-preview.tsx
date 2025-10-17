@@ -1,16 +1,16 @@
-import Avatar from './avatar';
-import DateComponent from './date-component';
-import CoverImage from './cover-image';
-import Link from 'next/link';
+import Avatar from "./avatar";
+import DateComponent from "./date-component";
+import CoverImage from "./cover-image";
+import Link from "next/link";
 
 interface Author {
-    name: string;
-    picture: { url: string; width: number; height: number; };
+  name: string;
+  picture: { url: string; width: number; height: number };
 }
 
 interface PostPreviewProps {
   title: string;
-  coverImage: { url: string; width: number; height: number; };
+  coverImage: { url: string; width: number; height: number };
   date: string;
   excerpt: string;
   author: Author;
@@ -38,9 +38,7 @@ export default function PostPreview({
       <div className="text-lg mb-4 font-medium text-gray-500">
         <DateComponent dateString={date} />
       </div>
-      <p className="text-lg leading-relaxed mb-4 text-gray-700">
-        {excerpt}
-      </p>
+      <p className="text-lg leading-relaxed mb-4 text-gray-700">{excerpt}</p>
       <Avatar name={author.name} picture={author.picture} />
     </div>
   );

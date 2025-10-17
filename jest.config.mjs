@@ -10,7 +10,7 @@ const tsJestTransformCfg = createDefaultPreset().transform;
 const jestConfig = {
   testEnvironment: "node",
   transform: {
-    ...tsJestTransformCfg, 
+    ...tsJestTransformCfg,
   },
   // Adicione outras configurações do Jest aqui, se necessário
 };

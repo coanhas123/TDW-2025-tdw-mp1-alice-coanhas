@@ -43,11 +43,10 @@ interface ContentfulEntryStructure<T> {
 // O tipo PostEntry usa a estrutura genérica com os seus campos
 type PostEntry = ContentfulEntryStructure<PostFields>;
 
-
 export default async function Home() {
   // AQUI: Tipagem forçada para o tipo definido localmente.
   // Isso deve finalmente resolver o erro TS2709, pois não há importação de 'contentful' a ser confundida.
-  const posts = await getPosts() as PostEntry[]; 
+  const posts = (await getPosts()) as PostEntry[];
 
   if (posts.length === 0) {
     return <p>Nenhum post encontrado.</p>;
@@ -121,9 +120,7 @@ export default async function Home() {
         Blog
       </h1>
 
-      <div className="grid gap-16 md:grid-cols-2">
-        {postElements}
-      </div>
+      <div className="grid gap-16 md:grid-cols-2">{postElements}</div>
     </main>
   );
 }

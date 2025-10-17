@@ -1,17 +1,15 @@
-
 // Vou usar caminhos relativos típicos de um starter Next.js, assumindo que components/ está um nível acima
-import PostPreview from './components/post-preview';
-
+import PostPreview from "./components/post-preview";
 
 interface Post {
   slug: string;
   title: string;
-  coverImage: { url: string; width: number; height: number; };
+  coverImage: { url: string; width: number; height: number };
   excerpt: string;
   date: string;
   author: {
     name: string;
-    picture: { url: string; width: number; height: number; };
+    picture: { url: string; width: number; height: number };
   };
 }
 

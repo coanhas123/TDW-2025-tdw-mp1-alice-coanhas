@@ -1,7 +1,17 @@
 /** @type {import('next').NextConfig} */
-module.exports = {
+const nextConfig = {
   images: {
-    loader: "custom",
-    formats: ["image/avif", "image/webp"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "**.ctfassets.net",
+      },
+      {
+        protocol: "https",
+        hostname: "**.contentful.com",
+      },
+    ],
   },
 };
+
+module.exports = nextConfig;

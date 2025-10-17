@@ -30,8 +30,8 @@ jobs:
       - name: Setup Node.js 18
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
-          cache: 'npm' # Adiciona cache para velocidade
+          node-version: "18"
+          cache: "npm" # Adiciona cache para velocidade
 
       - name: Install dependencies
         run: npm ci
@@ -57,15 +57,14 @@ jobs:
     defaults:
       run:
         working-directory: ${{ env.BASE_DIR }}
-        
-    
+
     env:
       # Credenciais Contentful injetadas dos Secrets
       CONTENTFUL_SPACE_ID: ${{ secrets.CONTENTFUL_SPACE_ID }}
       CONTENTFUL_ACCESS_TOKEN: ${{ secrets.CONTENTFUL_ACCESS_TOKEN }}
       CONTENTFUL_PREVIEW_ACCESS_TOKEN: ${{ secrets.CONTENTFUL_PREVIEW_ACCESS_TOKEN }}
       CONTENTFUL_ENVIRONMENT: ${{ secrets.CONTENTFUL_ENVIRONMENT }}
-      
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -73,8 +72,8 @@ jobs:
       - name: Setup Node.js 18
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
-          cache: 'npm'
+          node-version: "18"
+          cache: "npm"
 
       - name: Install dependencies
         run: npm ci
@@ -82,16 +81,16 @@ jobs:
       - name: 🏗️ Run Next Build & Static Export
         # O npx next build gera a pasta 'out' graças ao next.config.js (output: 'export')
         run: npx next build
-        
+
       # REMOVIDO: O passo 'Prepare Artifact for Deploy' foi removido porque introduzia caminhos proibidos ('..').
       # A pasta 'out' permanece em cms-contentful-app/out.
-      
+
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
           name: cms-contentful-app-out
           # CORRIGIDO: O caminho agora é absoluto a partir da raiz do workspace, sem usar '..'.
-          path: ${{ env.BASE_DIR }}/out/ 
+          path: ${{ env.BASE_DIR }}/out/
 
   # --------------------------------------------------------------------------------
   # 3. DEPLOY - Corre APENAS se o 'build' passar
@@ -115,7 +114,7 @@ jobs:
           name: cms-contentful-app-out
           path: out/ # Baixa para uma pasta 'out' na raiz do workspace
 
-      - name:  Deploy to Netlify via CLI
+      - name: Deploy to Netlify via CLI
         run: |
           npm install -g netlify-cli # Instala o netlify-cli
           # O diretório 'out' agora está na raiz do workspace

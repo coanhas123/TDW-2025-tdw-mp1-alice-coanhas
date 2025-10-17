@@ -3,17 +3,17 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-  "dev": "next dev",
-  "build": "next build",
-  "export": "next export",
-  "start": "next start",
-  "lint": "eslint \"**/*.{js,jsx,ts,tsx,mjs}\"",
-  "test": "jest",
-  "build-and-export": "next build && next export",
-  "prettier": "prettier --write \"**/*.{ts,tsx,js,jsx,json,css,md,mdx,html}\" --ignore-path .prettierignore",
-  "prettier:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,css,md,mdx,html}\" --ignore-path .prettierignore",
-  "deploy:netlify": "npx netlify-cli deploy --dir=out --prod --site=$NETLIFY_SITE_ID --auth=$NETLIFY_AUTH_TOKEN"
-},
+    "dev": "next dev",
+    "build": "next build",
+    "export": "next export",
+    "start": "next start",
+    "lint": "eslint \"**/*.{js,jsx,ts,tsx,mjs}\"",
+    "test": "jest",
+    "build-and-export": "next build && next export",
+    "prettier": "prettier --write \"**/*.{ts,tsx,js,jsx,json,css,md,mdx,html}\" --ignore-path .prettierignore",
+    "prettier:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,css,md,mdx,html}\" --ignore-path .prettierignore",
+    "deploy:netlify": "npx netlify-cli deploy --dir=out --prod --site=$NETLIFY_SITE_ID --auth=$NETLIFY_AUTH_TOKEN"
+  },
   "dependencies": {
     "@contentful/rich-text-react-renderer": "^16.1.5",
     "@contentful/rich-text-types": "^17.2.4",

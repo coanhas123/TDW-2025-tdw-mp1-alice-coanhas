@@ -1,8 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'export',
+  output: "export",
   images: {
-    domains: ['images.ctfassets.net'], // necessário para imagens do Contentful
+    domains: ["images.ctfassets.net"], // necessário para imagens do Contentful
   },
 };
 

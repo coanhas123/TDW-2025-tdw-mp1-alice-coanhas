@@ -1,4 +1,4 @@
-import Image from 'next/image';
+import Image from "next/image";
 
 interface AvatarProps {
   name: string;
@@ -11,7 +11,8 @@ interface AvatarProps {
 
 export default function Avatar({ name, picture }: AvatarProps) {
   // Use um placeholder se a URL da imagem não existir
-  const imageUrl = picture?.url || 'https://placehold.co/60x60/334155/FFFFFF?text=AV';
+  const imageUrl =
+    picture?.url || "https://placehold.co/60x60/334155/FFFFFF?text=AV";
 
   return (
     <div className="flex items-center space-x-4">
@@ -24,9 +25,7 @@ export default function Avatar({ name, picture }: AvatarProps) {
           height={40}
         />
       </div>
-      <div className="text-sm font-semibold text-gray-800">
-        {name}
-      </div>
+      <div className="text-sm font-semibold text-gray-800">{name}</div>
     </div>
   );
 }
