@@ -28,19 +28,19 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
-        working-directory: 94684
+        working-directory: app
 
       - name: ⚙️ Run Prettier
         run: npm run prettier
-        working-directory: 94684
+        working-directory: app
 
       - name: 🔎 Run ESLint
         run: npm run lint
-        working-directory: 94684
+        working-directory: app
 
       - name: 🧪 Run Jest Tests
         run: npm run test -- --ci --reporters=default
-        working-directory: 94684
+        working-directory: app
 
   # --------------------------------------------------------------------------------
   # 2. BUILD
@@ -71,7 +71,7 @@ jobs:
 
       - name: 🏗️ Run Next Build & Export
         run: npx next build && npx next export
-        working-directory: 94684
+        working-directory: app
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
