@@ -79,9 +79,10 @@ jobs:
 
   # --------------------------------------------------------------------------------
   # 3. DEPLOY TO NETLIFY
-  # --------------------------------------------------------------------------------
+  # -------------------------------------------------------------------------------
   deploy:
-    name: Build and Deploy to Netlify
+    name: Deploy to Netlify
+    needs: build
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     env:
@@ -92,17 +93,11 @@ jobs:
       - name: Checkout código
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
         with:
-          node-version: 18
-          cache: npm
-
-      - name: Instalar dependências
-        run: npm ci
-
-      - name: Build do projeto
-        run: npm run build
+          name: build-output
+          path: out/
 
       - name: Instalar Netlify CLI
         run: npm install -g netlify-cli
