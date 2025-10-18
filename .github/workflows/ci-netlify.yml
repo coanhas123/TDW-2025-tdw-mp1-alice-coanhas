@@ -65,7 +65,7 @@ jobs:
         run: npm ci
 
       - name:  Run Next Build & Export
-        run: npm run build-and-export
+        run: npm run build
 
 
       - name: Upload build artifact
