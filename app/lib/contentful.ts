@@ -1,4 +1,4 @@
-import { createClient } from 'contentful';
+import { createClient } from "contentful";
 
 export interface PostFields {
   title: string;
@@ -38,5 +38,5 @@ export const contentfulClient = createClient({
 export const contentfulPreviewClient = createClient({
   space: process.env.CONTENTFUL_SPACE_ID!,
   accessToken: process.env.CONTENTFUL_PREVIEW_ACCESS_TOKEN!,
-  host: 'preview.contentful.com',
+  host: "preview.contentful.com",
 });

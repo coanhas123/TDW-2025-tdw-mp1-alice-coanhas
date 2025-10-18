@@ -1,5 +1,5 @@
-import Image from 'next/image';
-import Link from 'next/link';
+import Image from "next/image";
+import Link from "next/link";
 
 interface CoverImageProps {
   title: string;
@@ -12,7 +12,7 @@ export default function CoverImage({ title, url, slug }: CoverImageProps) {
   const image = (
     <div className="shadow-lg hover:shadow-xl transition-shadow duration-200 rounded-lg overflow-hidden">
       <Image
-        src={url || 'https://placehold.co/1200x600/6B7280/FFFFFF?text=No+Image'}
+        src={url || "https://placehold.co/1200x600/6B7280/FFFFFF?text=No+Image"}
         alt={`Capa para ${title}`}
         width={1200} // Ajuste conforme a necessidade do seu layout
         height={600}

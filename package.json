@@ -7,7 +7,7 @@
     "build": "next build",
     "export": "next export",
     "start": "next start",
-    "lint": "eslint \"**/*.{js,jsx,ts,tsx,mjs}\"",
+    "lint": "eslint . --ignore-path .eslintignore \"**/*.{js,jsx,ts,tsx,mjs}\"",
     "test": "jest --config=jest.config.mjs",
     "build-and-export": "next build && next export",
     "prettier": "prettier --write \"**/*.{ts,tsx,js,jsx,json,css,md,mdx,html}\" --ignore-path .prettierignore",

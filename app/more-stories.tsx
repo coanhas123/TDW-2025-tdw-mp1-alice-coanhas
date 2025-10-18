@@ -1,5 +1,4 @@
-
-import PostPreview from './components/post-preview';
+import PostPreview from "./components/post-preview";
 
 interface Post {
   slug: string;

@@ -1,7 +1,7 @@
-import type { Entry, EntrySkeletonType, Asset } from 'contentful';
+import type { Entry, EntrySkeletonType, Asset } from "contentful";
 
 export interface AuthorSkeleton extends EntrySkeletonType {
-  contentTypeId: 'author';
+  contentTypeId: "author";
   fields: {
     name: string;
     picture: Asset;
@@ -9,7 +9,7 @@ export interface AuthorSkeleton extends EntrySkeletonType {
 }
 
 export interface PostSkeleton extends EntrySkeletonType {
-  contentTypeId: 'post';
+  contentTypeId: "post";
   fields: {
     title: string;
     slug: string;

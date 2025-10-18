@@ -1,27 +1,32 @@
-// eslint.config.mjs
+
 import js from '@eslint/js';
-import tseslint from 'typescript-eslint';
+import tsPlugin from '@typescript-eslint/eslint-plugin';
+import tsParser from '@typescript-eslint/parser';
 import globals from 'globals';
 
 export default [
   {
-    ignores: ['.next/**', 'node_modules/**', 'dist/**','postcss.config.cjs'],
+    ignores: ['.next/**', 'out/**', 'node_modules/**', 'dist/**', 'next-env.d.ts'],
   },
   js.configs.recommended,
-  ...tseslint.configs.recommended,
   {
     files: ['**/*.ts', '**/*.tsx'],
     languageOptions: {
-      parser: tseslint.parser,
+      parser: tsParser,
       parserOptions: {
         project: './tsconfig.json',
       },
       globals: {
         ...globals.browser,
         ...globals.node,
+         ...globals.jest, 
       },
     },
+    plugins: {
+      '@typescript-eslint': tsPlugin,
+    },
     rules: {
+      'no-undef': 'off',
       '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
       '@typescript-eslint/no-empty-interface': 'off',
       '@typescript-eslint/no-explicit-any': 'off',

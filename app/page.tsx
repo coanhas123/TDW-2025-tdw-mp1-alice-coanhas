@@ -1,129 +1,160 @@
-import Image from 'next/image';
-import type { PostEntry } from './lib/types';
-import { getPosts } from './lib/api';
+import Image from "next/image";
+import { getPosts } from "./lib/api";
+import type { Entry } from "contentful";
+import type { PostSkeleton } from "./types/contentful";
+
+import type { PostFields } from "./types/contentful";
+
+type PostEntry = Entry<PostSkeleton>;
 
 export default async function Home() {
-  const posts = (await getPosts()) as any as PostEntry[];
+  const posts = await getPosts(); // retorna Entry<any>[]
+  const typedPosts = posts as unknown as PostEntry[];
 
-  if (!posts || posts.length === 0) {
-    return <p>Nenhum post encontrado.</p>;
+  if (!typedPosts?.length) {
+    return <p className="text-center py-10">Nenhum post encontrado.</p>;
   }
-
-  const destaque = posts[0];
-  const demais = posts.slice(1);
-
-  // --- Campos do post principal ---
-  const dd = destaque.fields;
-
-  const coverUrl = (dd.coverImage as any)?.fields?.file?.url
-    ? 'https:' + (dd.coverImage as any).fields.file.url
-    : null;
-
-  const authorData = dd.author?.fields as any;
-  const authorPic = authorData?.picture?.fields?.file?.url
-    ? 'https:' + authorData.picture.fields.file.url
-    : null;
 
   return (
     <main className="max-w-4xl mx-auto px-6 py-16 space-y-16">
-      {/* === Destaque principal === */}
-      <section className="space-y-8">
-        {coverUrl && (
-          <div className="relative w-full h-96">
-            <Image
-              src={coverUrl}
-              alt={(dd.title as unknown as string) || ''}
-              fill
-              className="object-cover rounded-xl"
-            />
-          </div>
-        )}
-        <div className="space-y-2">
-          <h1 className="text-4xl md:text-5xl font-bold">
-            {(dd.title as unknown as string) || ''}
-          </h1>
-          <div className="flex items-center gap-4 text-sm text-gray-600">
-            <span>
-              {new Date(dd.date as unknown as string).toLocaleDateString(
-                'pt-PT',
-              )}
-            </span>
-            <span>•</span>
-            <div className="flex items-center gap-2">
-              {authorPic && (
-                <Image
-                  src={authorPic}
-                  alt={(authorData?.name as unknown as string) || ''}
-                  width={32}
-                  height={32}
-                  className="rounded-full"
-                />
-              )}
-              <span>{(authorData?.name as unknown as string) || ''}</span>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* === Post em destaque === */}
+      <FeaturedPost post={typedPosts[0]} />
 
-      {/* === Posts secundários === */}
+      {/* === Lista de posts secundários === */}
       <section className="space-y-12">
-        <h2 className="text-2xl font-semibold">More Stories</h2>
+        <h2 className="text-2xl font-semibold">Mais histórias</h2>
         <div className="grid gap-12 md:grid-cols-2">
-          {demais.map((item) => {
-            const post = item as PostEntry;
-            const { title, coverImage, date, author } = post.fields;
-
-            const url = (coverImage as any)?.fields?.file?.url
-              ? 'https:' + (coverImage as any).fields.file.url
-              : null;
-
-            const authorFields = author?.fields as any;
-            const authorPicUrl = authorFields?.picture?.fields?.file?.url
-              ? 'https:' + authorFields.picture.fields.file.url
-              : null;
-
-            return (
-              <article key={post.sys.id} className="space-y-4">
-                {url && (
-                  <div className="relative w-full h-48">
-                    <Image
-                      src={url}
-                      alt={(title as unknown as string) || ''}
-                      fill
-                      className="object-cover rounded-lg"
-                    />
-                  </div>
-                )}
-                <div className="space-y-2">
-                  <h3 className="text-xl font-medium">
-                    {(title as unknown as string) || ''}
-                  </h3>
-                  <div className="flex items-center gap-3 text-sm text-gray-500">
-                    <span>
-                      {new Date(date as unknown as string).toLocaleDateString(
-                        'pt-PT',
-                      )}
-                    </span>
-                    <span>•</span>
-                    {authorPicUrl && (
-                      <Image
-                        src={authorPicUrl}
-                        alt={(authorFields?.name as unknown as string) || ''}
-                        width={24}
-                        height={24}
-                        className="rounded-full"
-                      />
-                    )}
-                    <span>
-                      {(authorFields?.name as unknown as string) || ''}
-                    </span>
-                  </div>
-                </div>
-              </article>
-            );
-          })}
+          {typedPosts.slice(1).map((post) => (
+            <PostCard key={post.sys.id} post={post} />
+          ))}
         </div>
       </section>
     </main>
+  );
+}
+
+function FeaturedPost({ post }: { post: PostEntry }) {
+  const { title, date, coverImage, author } = post.fields;
+
+  const coverFields = coverImage?.fields as NonNullable<
+    PostFields["coverImage"]
+  >["fields"];
+  const coverUrl = coverFields?.file?.url
+    ? "https:" + coverFields.file.url
+    : null;
+
+  const authorFields = author?.fields as NonNullable<
+    PostFields["author"]
+  >["fields"];
+  const authorPic = authorFields?.picture?.fields?.file?.url
+    ? "https:" + authorFields.picture.fields.file.url
+    : null;
+
+  return (
+    <section className="space-y-8">
+      {coverUrl && (
+        <div className="relative w-full h-96">
+          <Image
+            src={coverUrl}
+            alt={typeof title === "string" ? title : "Imagem"}
+            fill
+            className="object-cover rounded-xl"
+            unoptimized
+          />
+        </div>
+      )}
+      <div className="space-y-2">
+        <h1 className="text-4xl md:text-5xl font-bold">
+          {typeof title === "string" ? title : "Sem título"}
+        </h1>
+        <div className="flex items-center gap-4 text-sm text-gray-600">
+          <span>
+            {typeof date === "string"
+              ? new Date(date).toLocaleDateString("pt-PT")
+              : "Data desconhecida"}
+          </span>
+          <span>•</span>
+          <div className="flex items-center gap-2">
+            {authorPic && (
+              <Image
+                src={authorPic}
+                alt={authorFields?.name ?? "Autor"}
+                width={32}
+                height={32}
+                className="rounded-full"
+                unoptimized
+              />
+            )}
+            <span>
+              {typeof authorFields?.name === "string"
+                ? authorFields.name
+                : "Autor desconhecido"}
+            </span>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function PostCard({ post }: { post: PostEntry }) {
+  const { title, date, coverImage, author } = post.fields;
+
+  const coverFields = coverImage?.fields as NonNullable<
+    PostFields["coverImage"]
+  >["fields"];
+  const coverUrl = coverFields?.file?.url
+    ? "https:" + coverFields.file.url
+    : null;
+
+  const authorFields = author?.fields as NonNullable<
+    PostFields["author"]
+  >["fields"];
+  const authorPic = authorFields?.picture?.fields?.file?.url
+    ? "https:" + authorFields.picture.fields.file.url
+    : null;
+
+  return (
+    <article className="space-y-4">
+      {coverUrl && (
+        <div className="relative w-full h-48">
+          <Image
+            src={coverUrl}
+            alt={typeof title === "string" ? title : "Imagem do post"}
+            fill
+            className="object-cover rounded-lg"
+            unoptimized
+          />
+        </div>
+      )}
+      <div className="space-y-2">
+        <h3 className="text-xl font-medium">
+          {typeof title === "string" ? title : "Sem título"}
+        </h3>
+        <div className="flex items-center gap-3 text-sm text-gray-500">
+          <span>
+            {typeof date === "string"
+              ? new Date(date).toLocaleDateString("pt-PT")
+              : "Data desconhecida"}
+          </span>
+          <span>•</span>
+          {authorPic && (
+            <Image
+              src={authorPic}
+              alt={authorFields?.name ?? "Autor"}
+              width={24}
+              height={24}
+              className="rounded-full"
+              unoptimized
+            />
+          )}
+          <span>
+            {typeof authorFields?.name === "string"
+              ? authorFields.name
+              : "Autor desconhecido"}
+          </span>
+        </div>
+      </div>
+    </article>
   );
 }
