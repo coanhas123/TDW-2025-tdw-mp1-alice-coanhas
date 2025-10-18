@@ -8,6 +8,10 @@ on:
     branches:
       - main
   workflow_dispatch: {}
+  schedule:
+    - cron: '0 0 * * *' # Executa todos os dias à meia-noite
+  repository_dispatch:
+    types: [contentful-update] # Webhook do CMS
 
 jobs:
   # --------------------------------------------------------------------------------
@@ -30,7 +34,7 @@ jobs:
         run: npm ci
 
       - name: ⚙️ Run Prettier
-        run: npm run prettier
+        run: npm run prettier:check
 
       - name: 🔎 Run ESLint
         run: npm run lint
@@ -64,9 +68,8 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name:  Run Next Build & Export
+      - name: 🛠️ Run Next Build
         run: npm run build
-
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
@@ -99,7 +102,7 @@ jobs:
       - name: Install Netlify CLI
         run: npm install -g netlify-cli
 
-      - name: Deploy to Netlify via CLI
+      - name: 🚀 Deploy to Netlify via CLI
         run: |
           netlify deploy \
             --dir=out \

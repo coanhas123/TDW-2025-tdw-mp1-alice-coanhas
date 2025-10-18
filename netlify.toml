@@ -1,4 +1,3 @@
 [build]
-  command = "echo 'Build handled by GitHub Actions'"
+  command = "npm run build"
   publish = "out"
-
