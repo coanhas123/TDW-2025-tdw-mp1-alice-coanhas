@@ -1,6 +1,4 @@
 [build]
-command = "echo 'Build handled by GitHub Actions'"
-publish = "out"
+  command = "echo 'Build handled by GitHub Actions'"
+  publish = "out"
 
-[functions]
-included_files = []
