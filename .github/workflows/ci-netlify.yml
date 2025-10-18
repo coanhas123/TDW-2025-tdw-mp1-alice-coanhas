@@ -75,7 +75,7 @@ jobs:
           path: out/
 
   # --------------------------------------------------------------------------------
-  # 3. DEPLOY
+  # 3. DEPLOY TO NETLIFY
   # --------------------------------------------------------------------------------
   deploy:
     name: Deploy to Netlify
@@ -85,6 +85,7 @@ jobs:
     env:
       NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
       NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -95,5 +96,13 @@ jobs:
           name: build-output
           path: out/
 
+      - name: Install Netlify CLI
+        run: npm install -g netlify-cli
+
       - name: Deploy to Netlify via CLI
-        run: npx netlify deploy --dir=out --prod --site=$NETLIFY_SITE_ID --auth=$NETLIFY_AUTH_TOKEN
+        run: |
+          netlify deploy \
+            --dir=out \
+            --prod \
+            --site=$NETLIFY_SITE_ID \
+            --auth=$NETLIFY_AUTH_TOKEN
