@@ -1,5 +1,5 @@
-import sum from "../sum";
+import sum from '../sum';
 
-test("soma básica", () => {
+test('soma básica', () => {
   expect(sum(1, 2)).toBe(3);
 });

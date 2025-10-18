@@ -1,9 +1,9 @@
-import Image from "next/image";
+import Image from 'next/image';
 import {
   documentToReactComponents,
   Options,
-} from "@contentful/rich-text-react-renderer";
-import { BLOCKS, Document } from "@contentful/rich-text-types";
+} from '@contentful/rich-text-react-renderer';
+import { BLOCKS, Document } from '@contentful/rich-text-types';
 
 interface Asset {
   sys: {
@@ -34,12 +34,12 @@ function RichTextAsset({ id, assets }: RichTextAssetProps) {
 
   if (asset?.url) {
     return (
-      <div style={{ position: "relative", width: "100%", height: "400px" }}>
+      <div style={{ position: 'relative', width: '100%', height: '400px' }}>
         <Image
           src={asset.url}
           alt={asset.description}
           fill
-          style={{ objectFit: "cover" }}
+          style={{ objectFit: 'cover' }}
         />
       </div>
     );
