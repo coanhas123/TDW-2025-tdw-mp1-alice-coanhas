@@ -104,9 +104,9 @@ jobs:
 
       - name: 🚀 Deploy para Netlify via CLI
         run: |
-          netlify deploy \
-                --dir=out \
-                --prod \
-                --site=$NETLIFY_SITE_ID \
-                --auth=$NETLIFY_AUTH_TOKEN \
+          netlify deploy\
+                --dir=out\
+                --prod\
+                --site=$NETLIFY_SITE_ID\
+                --auth=$NETLIFY_AUTH_TOKEN\
         
