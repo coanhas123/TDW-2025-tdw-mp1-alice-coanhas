@@ -1,0 +1,25 @@
+stages:
+  - build
+  - deploy
+
+variables:
+  NODE_ENV: production
+
+build:
+  stage: build
+  image: node:18
+  script:
+    - npm ci
+    - npm run build
+  artifacts:
+    paths:
+      - out/
+
+deploy:
+  stage: deploy
+  image: node:18
+  dependencies:
+    - build
+  script:
+    - npm install -g netlify-cli
+    - netlify deploy --dir=out --prod --auth=$NETLIFY_AUTH_TOKEN --site=$NETLIFY_SITE_ID
