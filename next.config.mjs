@@ -1,15 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'export',
-  reactStrictMode: true,
+  output: 'export', // substitui o antigo next export
   images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'images.ctfassets.net',
-      },
-    ],
+    unoptimized: true, // evita problemas com o Image Optimization em export estático
   },
+  reactStrictMode: true,
 };
 
 export default nextConfig;
