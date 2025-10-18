@@ -1,7 +1,7 @@
 import "./globals.css";
 import ApplyHtmlClass from "./components/ApplyHtmlClass";
 import { Inter } from "next/font/google";
-import React from 'react';
+import React from "react";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
