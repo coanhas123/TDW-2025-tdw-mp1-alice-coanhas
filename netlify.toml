@@ -2,7 +2,3 @@
 command = "echo 'Build handled by GitHub Actions'"
 publish = "out"
 
-[[plugins]]
-package = "@netlify/plugin-nextjs"
-  [plugins.inputs]
-  disabled = true
