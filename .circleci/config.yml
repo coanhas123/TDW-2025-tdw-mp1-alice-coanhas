@@ -35,6 +35,9 @@ jobs:
 
   deploy:
     executor: node-executor
+    environment:
+      NETLIFY_AUTH_TOKEN: $NETLIFY_AUTH_TOKEN
+      NETLIFY_SITE_ID: $NETLIFY_SITE_ID
     steps:
       - checkout
       - run: npm ci
@@ -44,9 +47,7 @@ jobs:
           command: |
             npm install -g netlify-cli
             netlify deploy --prod --dir=out --auth=$NETLIFY_AUTH_TOKEN --site=$NETLIFY_SITE_ID
-        environment:
-          NETLIFY_AUTH_TOKEN: $NETLIFY_AUTH_TOKEN
-          NETLIFY_SITE_ID: $NETLIFY_SITE_ID
+
 
 workflows:
   version: 2
