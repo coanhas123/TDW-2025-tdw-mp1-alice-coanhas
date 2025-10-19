@@ -34,18 +34,16 @@ jobs:
       - run: npm run build
 
   deploy:
-  executor: node-executor
-  steps:
-    - checkout
-    - run: npm ci
-    - run: npm run build
-    - run:
-        name: Deploy to Netlify
-        command: |
-          npm install -g netlify-cli
-          netlify deploy --prod --dir=out --auth=${NETLIFY_AUTH_TOKEN} --site=${NETLIFY_SITE_ID}
-
-
+    executor: node-executor
+    steps:
+      - checkout
+      - run: npm ci
+      - run: npm run build
+      - run:
+          name: Deploy to Netlify
+          command: |
+            npm install -g netlify-cli
+            netlify deploy --prod --dir=out --auth=${NETLIFY_AUTH_TOKEN} --site=${NETLIFY_SITE_ID}
 
 workflows:
   version: 2
