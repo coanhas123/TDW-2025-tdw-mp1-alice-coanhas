@@ -10,10 +10,9 @@ on:
   workflow_dispatch: {}
   schedule:
     - cron: '0 0 * * *' # Executa todos os dias à meia-noite
-
-  # 🔔 Webhook do Contentful
+    
   repository_dispatch:
-    types: [contentful-update] # Este tipo deve ser enviado pelo webhook
+    types: [cms-update]
 
 jobs:
   # --------------------------------------------------------------------------------
