@@ -40,14 +40,20 @@ jobs:
       - run: npm ci
       - run: npm run build
       - run:
+          name: Export static site
+          command: npm run export
+      - run:
           name: Deploy to Netlify
           command: |
             npx netlify deploy --prod --dir=out --auth=${NETLIFY_AUTH_TOKEN} --site=${NETLIFY_SITE_ID}
 
-
 workflows:
   version: 2
   build-and-deploy:
+    parameters:
+      cms_trigger:
+        type: boolean
+        default: false
     jobs:
       - install
       - lint:
