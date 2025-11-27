@@ -8,8 +8,7 @@ on:
     branches:
       - main
   workflow_dispatch: {}
-  schedule:
-    - cron: '0 0 * * *' # Executa todos os dias à meia-noite
+  
     
   repository_dispatch:
     types: [cms-update]
